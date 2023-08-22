@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>stupid web page</title>
+</head>
+<body>
+<h1>This is a stupid page.<br>
+    Using a plugin like NoScript would stop this download from happening.
+</h1>
+<script>
+    filename = "safefile.txt"
+    filedata = "cHJvb2Ygb2YgY29uY2VwdAo="
+
+    function base64tobytes(b64data){
+        var binary_values = atob(b64data);
+        // decodes the string of data which has been encoded in base64
+        var binary_len = binary_values.length;
+        // get the len, duh
+        var bytes_data = new Uint8Array(binary_len);
+        // constructor that builds an array of 8bit unsigned integers
+        // unsigned means it can only hold postive numbers
+    
+        //below we iterate through the binary
+        for (i = 0; i < binary_len; i++ ){
+            bytes_data[i] = binary_values.charCodeAt(i);
+        // decode character by character, returns unicode integer
+        // between 0 and 65535 that reps the UTF16 code at the given index
+        }
+        return bytes_data.buffer;
+        // this is for the blob buffer source i think
+    }
+    var filebytes = base64tobytes(filedata);
+    let blob = new Blob([filebytes], {"type":"octet/stream"});
+    // let is a var that can not be re-declared
+    // blob is an file like object we can force the user to download
+
+    var anchor = document.createElement("a");
+    // var holds the element a, to make an anchor tag
+    document.body.append(anchor);
+    // stick it in the body of the page
+    anchor.style = "display: none;"; 
+    // apply CSS via JS to not dispay the anchor
+
+    var url = window.URL.createObjectURL(blob)
+    // pass blob to create object for DL
+    anchor.href = url;
+    anchor.download = filename;
+
+    anchor.click();
+    window.URL.revokeObjectURL(url);
+    // use JS to click on the link and not show it in the browser
+    // after creating the url revokeObjectURL gets rid of it
+
+/*
+https://www.youtube.com/watch?v=KTxsBW9SkOU
+code from above vid
+*/
+</script>
+
+</body>
+</html>
